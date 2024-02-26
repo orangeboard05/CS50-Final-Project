@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Friends
+{% endblock %}
+
+{% block main %}
+
+    <div class="container my-5">
+        <h1 class="text-body-emphasis">Your Board Gaming Friends!</h1>
+        <p class="lead">
+            Your board gaming friends are listed below. <br>You can also add friends and manage friend requests on this page.
+        </p>
+    </div>
+
+    <div class="container">
+        <div class="row align-items-vertical g-3">
+            <div class="col-sm-12 col-md-6">
+                <div class="text-center bg-body-tertiary rounded-3 border py-5 sameheight">
+                    <h3 class="center">Your Board Gaming Friends!</h3><br>
+                    <table class="table table-dark table-hover mb-5" style="text-align: left; margin: auto; width: 80%; border: 1px solid #dee2e6">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%"></th>
+                                <th style="width: 65%" class="ps-3">Username</th>
+                                <th style="width: 25%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if friends %}
+                                {% for friend in friends %}
+                                    <tr>
+                                        <td style="text-align: center">
+                                            <form action="/removefriend" method="post">
+                                                <button type="submit" name="delete_id" value="{{ friend.id }}" onclick="return confirm('Remove this friend?')" class="btn btn-sm btn-outline-danger">X</button>
+                                            </form>
+                                        </td>
+                                        <td class="ps-3">{{ friend.username }}</td>
+                                        <td style="text-align: center">
+                                            <form action="/friend_shelf" method="post">
+                                                <button type="submit" name="viewfriendshelf" class="btn btn-sm btn-success" value="{{ friend.id }}">View Shelf</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td></td>
+                                    <td><i>Add friends <a href="/friend_requests">here</a>!</i></td>
+                                    <td></td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <div class="text-center bg-body-tertiary rounded-3 border py-5 sameheight">
+                    <form action="/addfriend" method="POST" id="add_friend_form"></form>
+                    <h3 class="center">Outgoing Requests</h3><br>
+                    <table class="table table-dark table-hover mb-5" style="text-align: left; margin: auto; width: 80%; border: 1px solid #dee2e6">
+                        <thead>
+                            <tr>
+                                <th style="width: 70%">Username</th>
+                                <th style="width: 30%; text-align: center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input autocomplete="off" autofocus required class="form-control form-control-sm" name="friendrequest" placeholder="enter a friend's exact username" type="text" form="add_friend_form">
+                                </td>
+                                <td style="text-align: center">
+                                    <button type="submit" form="add_friend_form" class="btn btn-sm btn-primary">Send Request</button>
+                                </td>
+                            </tr>
+                            {% if outgoing_requests %}
+                                {% for request in outgoing_requests %}
+                                    <tr>
+                                        <td style="text-align: left">{{ request.username }}</td>
+                                        <td style="text-align: center">
+                                            <form action="/manage_requests" method="post">
+                                                <button type="submit" name="cancel_request" class="btn btn-sm btn-danger" value="{{request.id}}" onclick="return confirm('Cancel this friend request?')">Cancel Request</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td style="text-align: left"><i>no outgoing requests</i></td>
+                                    <td style="text-align: center">
+                                        <button disabled type="button" class="btn btn-sm btn-secondary" style="visibility: hidden" aria-disabled="true">Cancel Request</button>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    <h3 class="center">Incoming Requests</h3><br>
+                    <table class="table table-dark table-hover" style="text-align: left; margin: auto; width: 80%; border: 1px solid #dee2e6">
+                        <thead>
+                            <tr>
+                                <th style="width: 70%">Username</th>
+                                <th style="width: 30%; text-align: center" colspan="2" >Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if incoming_requests %}
+                                {% for request in incoming_requests %}
+                                    <tr>
+                                        <td>{{ request.username }}</td>
+                                        <td style="text-align: center; border-right-style: hidden">
+                                            <form action="/manage_requests" method="post">
+                                                <button type="submit" name="accept_request" class="btn btn-sm btn-success" value="{{request.id}}" onclick="return confirm('Accept this friend request?')">Accept</button>
+                                            </form>
+                                        </td>
+                                        <td style="text-align: center; border-left-style: hidden">
+                                            <form action="/manage_requests" method="post">
+                                                <button type="submit" name="reject_request" class="btn btn-sm btn-danger" value="{{request.id}}" onclick="return confirm('Reject this friend request?')">Reject</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td style="text-align: left"><i>no incoming requests</i></td>
+                                    <td style="text-align: center; border-right-style: hidden">
+                                        <button disabled type="button" class="btn btn-sm btn-secondary" style="visibility: hidden" aria-disabled="true">Accept</button>
+                                    </td>
+                                    <td style="text-align: center; border-left-style: hidden">
+                                        <button disabled type="button" class="btn btn-sm btn-secondary" style="visibility: hidden" aria-disabled="true">Reject</button>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

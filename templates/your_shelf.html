@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+
+<div class="container my-5">
+    <h1 class="text-body-emphasis">Your Board Game Shelf!</h1>
+    <p class="lead">This is your virtual board game shelf where you can rate and keep track of the games you own.<br>You can add games to your shelf <a href="/add_games">here</a>.<br>Rate your games from 10 (best) to 1 (worst), or 0 to indicate no rating.<br>Click on a title to see your game on <a href="https://www.boardgamegeek.com" target="_blank">BoardGameGeek</a>.
+    </p>
+</div>
+
+<div class="container my-5">
+    <div class="p-5 text-center bg-body-tertiary rounded-3 border">
+        {% if numberofgames == 1 %}
+            <p class="lead">Your shelf contains 1 game!</p>
+        {% elif numberofgames > 1 %}
+            <p class="lead">Your shelf contains {{ numberofgames }} games!</p>
+        {% else %}
+            <p class="lead">Your shelf doesn't contain any games!</p>
+        {% endif %}
+        <table class="table table-dark table-hover" style="text-align: left; width: 80%; margin: auto; border: 1px solid #dee2e6">
+            <thead>
+                <tr>
+                    <th style="width: 20%; text-align: center">
+                        <form action="/your_shelf" method="post">
+                            <button name="sortbyrating" type="submit" class="btn btn-lg" value="sortbyrating">Your Rating</button>
+                        </form>
+                    </th>
+                    <th style="width: 70%">
+                        <form action="/your_shelf" method="post">
+                            <button name="sortbytitle" type="submit" class="btn btn-lg" value="sortbytitle">Title</button>
+                        </form>
+                    </th>
+                    <th style="width: 10%">
+                        <button name="removeheader" type="button" class="btn btn-lg" value="removeheader" style="border-color: #212529; color: #dee2e6; opacity: 100" disabled>Delete</button>
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% if shelf %}
+                    {% for entry in shelf %}
+                        <tr>
+                            <td>
+                                <form id ="formrating{{ loop.index }}" action="/rate" method="get">
+                                    <input type="hidden" name="game_id" value={{entry.game_id}}>
+                                    <select name="ratingdropdown" class="form-select" style="width: 75px; text-align: center; margin: auto">
+                                        <option disabled selected value="{{entry.rating}}">{{ entry.rating|default('--', true) }}</option>
+                                        <option value="10">10</option>
+                                        <option value="9">9</option>
+                                        <option value="8">8</option>
+                                        <option value="7">7</option>
+                                        <option value="6">6</option>
+                                        <option value="5">5</option>
+                                        <option value="4">4</option>
+                                        <option value="3">3</option>
+                                        <option value="2">2</option>
+                                        <option value="1">1</option>
+                                        <option value="0">0</option>
+                                      </select>
+                                </form>
+                            </td>
+                            <td>
+                                <a class="ps-3" href="https://boardgamegeek.com/boardgame/{{entry.game_id}}" target="_blank">{{ entry.title }}</a>
+                            </td>
+
+                            <td style="text-align: center">
+                                <form action="/deletegame" method="post">
+                                    <button type="submit" name="delete_id" value="{{entry.game_id}}" onclick="return confirm('Remove this game from your shelf?')" class="btn btn-sm btn-outline-danger">X</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td></td>
+                        <td><i>No games yet! Add them <a href="/add_games">here</a>!</i></td>
+                        <td></td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    <script>
+        let ratingforms = document.querySelectorAll('select');
+        for (let index = 0; index < ratingforms.length; index++) {
+            ratingforms[index].addEventListener('change', function() {
+                let parentDiv = this.parentNode;
+                let hiddenValue = parentDiv.querySelector('input[type="hidden"]').value;
+                event.preventDefault();
+                const xhttp = new XMLHttpRequest();
+                xhttp.onload = function() {
+                    }
+                xhttp.open("POST", "/rate");
+                xhttp.setRequestHeader("Content-type", "application/json");
+                let data = {
+                    rating: this.value,
+                    hiddenValue: hiddenValue
+                };
+                xhttp.send(JSON.stringify(data));
+            })
+        };
+    </script>
+
+
+
+{% endblock %}

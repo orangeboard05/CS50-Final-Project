@@ -1,0 +1,8 @@
+cs50
+flask
+flask_session
+functools
+requests
+urllib
+werkzeug.security
+xml.etree.ElementTree

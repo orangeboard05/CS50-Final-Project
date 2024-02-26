@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+
+    <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+        <div class="row align-items-center g-lg-5 py-5">
+          <div class="col-lg-7 text-center text-lg-start">
+            <h1 class="display-4 fw-bold text-body-emphasis mb-3">Welcome to Your<br>Board Game Library!</h1>
+            <p class="col-lg-10 fs-4">Sign in to manage your digital board game shelf, rate games, view your friends' board game shelves, and view your board game library containing all the games on your shelf and your friends' shelves!<br>Click <a href="/signup">here</a> to create a new account.</p>
+          </div>
+          <div class="col-md-10 mx-auto col-lg-5">
+            <form action="/login" method= "post" class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
+              <div class="form mb-3">
+                <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text">
+              </div>
+              <div class="form mb-3">
+                <input autocomplete="off" class="form-control" name="password" placeholder="Password" type="password">
+              </div>
+              <button class="w-100 btn btn-lg btn-primary" type="submit">Log In</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+{% endblock %}
