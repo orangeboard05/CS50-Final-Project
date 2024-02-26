@@ -1,5 +1,4 @@
 # Board Game Library
-### Video Demo:  <URL https://youtu.be/gDveeUHhvas>
 ### Description: A website to track and rate the board games you and your friends own.
 
 My friends and I really enjoy playing board games together and we all have large collections. It is hard to remember what games we all own! I wanted a way to easily track and rate what board games we own. I decided to make a website where we could each have our own "virtual board game shelf" and combine them into a "virtual board game library".
